@@ -95,6 +95,8 @@ def cancel_order(
         order = service.cancel_order_with_invoice(db, repo, payment_repo, order_id)
     except OrderNotFoundError:
         raise HTTPException(status_code=404, detail="Order not found")
+    except InvalidOrderTransition as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except OrderOwnershipError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return order
