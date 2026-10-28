@@ -86,6 +86,13 @@ curl http://localhost:8000/orders/1
 
 # List Orders
 curl http://localhost:8000/orders/
+
+# Generate, pay, then refund an invoice for order 1
+curl -X POST http://localhost:8000/payment/generate \
+  -H "Content-Type: application/json" \
+  -d '{"order_id": 1}'
+curl -X POST http://localhost:8000/payment/pay/1
+curl -X POST http://localhost:8000/payment/refund/1
 ```
 
 ## All Make Targets
