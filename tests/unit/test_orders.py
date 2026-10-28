@@ -141,6 +141,11 @@ def test_fsm_valid_transitions(current, target):
     OrderStateMachine.validate_transition(current, target)
 
 
+def test_delivered_only_leads_to_returned():
+    # Decision (issue 5 owner): DELIVERED is terminal except for returns.
+    assert OrderStateMachine.TRANSITIONS[models.OrderStatus.DELIVERED] == [models.OrderStatus.RETURNED]
+
+
 @pytest.mark.parametrize("current, target", INVALID_TRANSITIONS)
 def test_fsm_invalid_transitions(current, target):
     with pytest.raises(InvalidOrderTransition):
