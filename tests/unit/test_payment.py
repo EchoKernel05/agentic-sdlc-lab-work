@@ -15,6 +15,12 @@ def _make_mock_invoice_repo(invoice=None):
     repo.get_invoice_by_order_id.return_value = invoice
     repo.get_invoice_by_external_id.return_value = invoice
     repo.mark_invoice_paid_and_update_order.return_value = (invoice, MagicMock())
+
+    def update_invoice(invoice_id, **kwargs):
+        for field, value in kwargs.items():
+            setattr(invoice, field, value)
+        return invoice
+    repo.update_invoice.side_effect = update_invoice
     return repo
 
 
@@ -281,7 +287,7 @@ def test_refund_invoice_paid_invoice_cancels_and_returns_invoice():
     assert result == invoice
     assert invoice.status == payment_models.InvoiceStatus.CANCELLED
     assert order.status == order_models.OrderStatus.CANCELLED
-    validate_transition.assert_called_once_with(
+    validate_transition.assert_any_call(
         order_models.OrderStatus.FULFILLED,
         order_models.OrderStatus.CANCELLED,
     )

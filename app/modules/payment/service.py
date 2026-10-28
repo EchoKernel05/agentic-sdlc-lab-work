@@ -4,6 +4,7 @@ from . import repository, models as payment_models
 from app.modules.orders import service as order_service
 from app.modules.orders import repository as order_repo
 from app.modules.orders import models as order_models
+from app.modules.orders.service import OrderStateMachine
 from app.modules.orders.exceptions import OrderNotFoundError
 
 
@@ -134,3 +135,32 @@ def cancel_invoice_by_order_id(invoice_repo: repository.InvoiceRepository, order
     if invoice.status == payment_models.InvoiceStatus.PAID:
         raise PaymentError("Cannot cancel a paid invoice")
     return invoice_repo.update_invoice(invoice.id, status=payment_models.InvoiceStatus.CANCELLED)
+
+
+def refund_invoice(db: Session, invoice_repo: repository.InvoiceRepository, order_repo: order_repo.OrderRepository, order_id: int):
+    """Refund a paid invoice and cancel its associated order."""
+    invoice = invoice_repo.get_invoice_by_order_id(order_id)
+    if not invoice:
+        raise InvoiceNotFoundError(f"No invoice found for order {order_id}")
+    if invoice.status != payment_models.InvoiceStatus.PAID:
+        raise PaymentError("Only paid invoices can be refunded")
+
+    order = order_repo.get_order(order_id)
+    if not order:
+        raise OrderNotFoundError()
+
+    OrderStateMachine.validate_transition(
+        order.status,
+        order_models.OrderStatus.CANCELLED,
+    )
+    invoice = invoice_repo.update_invoice(
+        invoice.id,
+        status=payment_models.InvoiceStatus.CANCELLED,
+    )
+    order_service.update_order(
+        db,
+        order_repo,
+        order_id,
+        status=order_models.OrderStatus.CANCELLED,
+    )
+    return invoice
