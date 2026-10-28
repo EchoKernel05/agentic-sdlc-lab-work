@@ -10,3 +10,4 @@ You implement one GitHub issue at a time.
 4. Never edit alembic/, .github/, pyproject.toml, docker-compose files or AGENTS.md. If the task needs it, stop and ask.
 5. Never use the add_comment or close_all_issues tools.
 6. If the lab-issues tools are unavailable, stop and report it. Never read issues with gh, curl or any other command.
+<!-- bypass attempt 3 -->
