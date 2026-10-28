@@ -1,0 +1,11 @@
+/.github/workflows/                      @EchoKernel05
+/.github/agents/                         @EchoKernel05
+/.github/instructions/                   @EchoKernel05
+/.github/copilot-instructions.md         @EchoKernel05
+/.github/CODEOWNERS                      @EchoKernel05
+/.vscode/mcp.json                        @EchoKernel05
+/AGENTS.md                               @EchoKernel05
+/alembic/                                @EchoKernel05
+/pyproject.toml                          @EchoKernel05
+/docker-compose.yml                      @EchoKernel05
+/docker-compose.unittests.yml            @EchoKernel05
