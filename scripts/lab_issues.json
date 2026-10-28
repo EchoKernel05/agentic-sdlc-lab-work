@@ -49,7 +49,7 @@
       ]
     },
     {
-      "title": "Rename mark_invoice_paid_and_update_order to settle_invoice_and_advance_order",
+      "title": "Rename settle_invoice_and_advance_order to settle_invoice_and_advance_order",
       "body": "Rename the repository method and update every caller, test and doc mention. After the change, git grep for the old name must return nothing.",
       "labels": [
         "agent-task"
