@@ -78,7 +78,7 @@ def mark_invoice_paid(db: Session, invoice_repo: repository.InvoiceRepository, o
     if invoice.status == payment_models.InvoiceStatus.PAID:
         raise PaymentError("Invoice is already marked as paid")
 
-    invoice, order = invoice_repo.mark_invoice_paid_and_update_order(
+    invoice, order = invoice_repo.settle_invoice_and_advance_order(
         invoice_id, invoice.order_id, order_models.OrderStatus.FULFILLED
     )
     return invoice
@@ -99,7 +99,7 @@ def mark_invoice_paid_by_order_id(db: Session, invoice_repo: repository.InvoiceR
     if invoice.status == payment_models.InvoiceStatus.PAID:
         raise PaymentError("Invoice is already marked as paid")
 
-    invoice, order = invoice_repo.mark_invoice_paid_and_update_order(
+    invoice, order = invoice_repo.settle_invoice_and_advance_order(
         invoice.id, order_id, order_models.OrderStatus.FULFILLED
     )
     return invoice

@@ -13,7 +13,7 @@ def _make_mock_invoice_repo(invoice=None):
     repo.get_invoice.return_value = invoice
     repo.get_invoice_by_order_id.return_value = invoice
     repo.get_invoice_by_external_id.return_value = invoice
-    repo.mark_invoice_paid_and_update_order.return_value = (invoice, MagicMock())
+    repo.settle_invoice_and_advance_order.return_value = (invoice, MagicMock())
     return repo
 
 
@@ -118,12 +118,12 @@ def test_mark_invoice_paid_success():
     order_repo = _make_mock_order_repo(order)
     invoice_repo = _make_mock_invoice_repo(invoice)
     invoice_repo.get_invoice.return_value = invoice
-    invoice_repo.mark_invoice_paid_and_update_order.return_value = (invoice, order)
+    invoice_repo.settle_invoice_and_advance_order.return_value = (invoice, order)
 
     result = service.mark_invoice_paid(db, invoice_repo, order_repo, 1)
 
     assert result == invoice
-    invoice_repo.mark_invoice_paid_and_update_order.assert_called_once_with(1, 1, order_models.OrderStatus.FULFILLED)
+    invoice_repo.settle_invoice_and_advance_order.assert_called_once_with(1, 1, order_models.OrderStatus.FULFILLED)
 
 
 def test_mark_invoice_paid_not_found():
@@ -163,12 +163,12 @@ def test_mark_invoice_paid_by_order_id_success():
     order_repo = _make_mock_order_repo(order)
     invoice_repo = _make_mock_invoice_repo(invoice)
     invoice_repo.get_invoice_by_order_id.return_value = invoice
-    invoice_repo.mark_invoice_paid_and_update_order.return_value = (invoice, order)
+    invoice_repo.settle_invoice_and_advance_order.return_value = (invoice, order)
 
     result = service.mark_invoice_paid_by_order_id(db, invoice_repo, order_repo, 1)
 
     assert result == invoice
-    invoice_repo.mark_invoice_paid_and_update_order.assert_called_once_with(1, 1, order_models.OrderStatus.FULFILLED)
+    invoice_repo.settle_invoice_and_advance_order.assert_called_once_with(1, 1, order_models.OrderStatus.FULFILLED)
 
 
 def test_mark_invoice_paid_invoice_not_found():
