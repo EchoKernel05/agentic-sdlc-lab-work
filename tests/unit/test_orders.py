@@ -141,6 +141,10 @@ def test_fsm_valid_transitions(current, target):
     OrderStateMachine.validate_transition(current, target)
 
 
+def test_delivered_is_terminal():
+    assert OrderStateMachine.TRANSITIONS[models.OrderStatus.DELIVERED] == []
+
+
 @pytest.mark.parametrize("current, target", INVALID_TRANSITIONS)
 def test_fsm_invalid_transitions(current, target):
     with pytest.raises(InvalidOrderTransition):
