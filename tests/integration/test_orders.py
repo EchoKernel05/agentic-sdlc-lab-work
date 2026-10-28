@@ -185,3 +185,28 @@ def test_update_order_invalid_transition(client):
         "Authorization": f"Bearer {token}"
     })
     assert get_response.json()["status"] == "delivered"
+
+
+def test_cancel_delivered_order_returns_bad_request(client):
+    token = _login(client)
+    created = client.post("/orders/", json={"item": "terminal"}, headers={
+        "Authorization": f"Bearer {token}"
+    }).json()
+    order_id = created["id"]
+
+    for next_status in ["processing", "fulfilled", "shipped", "delivered"]:
+        response = client.put(f"/orders/{order_id}", json={"status": next_status}, headers={
+            "Authorization": f"Bearer {token}"
+        })
+        assert response.status_code == 200
+
+    response = client.post(f"/orders/{order_id}/cancel", headers={
+        "Authorization": f"Bearer {token}"
+    })
+    assert response.status_code == 400
+    assert "Cannot transition" in response.json()["detail"]
+
+    get_response = client.get(f"/orders/{order_id}", headers={
+        "Authorization": f"Bearer {token}"
+    })
+    assert get_response.json()["status"] == "delivered"

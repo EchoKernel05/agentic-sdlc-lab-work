@@ -101,6 +101,7 @@ def cancel_order(db: Session, repo: repository.OrderRepository, order_id: int):
     if order.status == models.OrderStatus.CANCELLED:
         raise OrderOwnershipError("Order is already cancelled")
 
+    OrderStateMachine.validate_transition(order.status, models.OrderStatus.CANCELLED)
     order.status = models.OrderStatus.CANCELLED
     try:
         db.commit()
