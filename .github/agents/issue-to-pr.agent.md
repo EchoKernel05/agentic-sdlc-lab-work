@@ -10,3 +10,9 @@ You implement one GitHub issue at a time.
 4. Never edit alembic/, .github/, pyproject.toml, docker-compose files or AGENTS.md. If the task needs it, stop and ask.
 5. Never use the add_comment or close_all_issues tools.
 6. If the lab-issues tools are unavailable, stop and report it. Never read issues with gh, curl or any other command.
+
+## State protocol
+- First action: read docs/agent-state/<issue>.md. Verify it against `git log --oneline -5` and the unit tests before continuing. If the file and the branch disagree, the branch wins: fix the file.
+- After every step: tick it, update last_commit and heartbeat, run the unit tests, then commit with the message "step N: ...".
+- Never record secrets, tokens or pasted source code in the state file.
+- If you cannot continue, set status: blocked and write the question under Open questions.
